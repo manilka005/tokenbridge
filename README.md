@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# TokenBridge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Design token sync, diff & export — bridging Figma variables to production codebases.
 
-Currently, two official plugins are available:
+![TokenBridge Diff View](./docs/screenshot-diff.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## What it does
 
-## React Compiler
+TokenBridge lets you paste two token sets (e.g. your Figma source and your codebase) and instantly see what's changed, what's been added, and what's been removed — with colour swatch previews and token type classification.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- **Visual diff engine** — compare two W3C-format token files side by side
+- **Colour swatch previews** — see actual colours inline, not just hex strings
+- **Token type classification** — automatically detects color, spacing, typography, radius, and shadow tokens
+- **Multi-format export** — generate CSS variables, Tailwind config, or a JS object in one click
+- **Copy to clipboard** — export and paste directly into your codebase
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS v3
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting started
+```bash
+git clone https://github.com/manilka005/tokenbridge.git
+cd tokenbridge
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:5173
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Usage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
+1. **Import** — paste your source tokens (Figma) and target tokens (codebase) as JSON
+2. **Diff** — click Parse & Compare to see a visual breakdown of all changes
+3. **Export** — choose CSS variables, Tailwind config, or JS object and copy
+
+## Token format
+
+TokenBridge accepts W3C Design Token format:
+```json
+{
+  "color": {
+    "brand": { "value": "#6366f1" },
+    "surface": { "value": "#ffffff" }
   },
-])
+  "space": {
+    "md": { "value": "16px" }
+  }
+}
 ```
+
+## Roadmap
+
+- [ ] Figma API integration — pull tokens directly from a Figma file
+- [ ] VS Code extension — sync tokens without leaving your editor
+- [ ] Token history — track changes across versions
+- [ ] Team collaboration — shared token sets with conflict resolution
+
+## License
+
+MIT
