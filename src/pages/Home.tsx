@@ -159,7 +159,7 @@ export default function Home() {
                   <div className="space-y-2.5 md:space-y-3">
                     {tokens.map((t) => (
                       <div key={t.name} className="flex items-center justify-between py-1 border-b border-[#f0f0f0] last:border-0">
-                        <code style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] md:text-[12px] text-[#555]">{t.name}</code>
+                        <code style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] md:text-[12px] text-[#444]">{t.name}</code>
                         <div className="flex items-center gap-2">
                           {t.swatch && <span className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-sm border border-black/10 flex-shrink-0" style={{ backgroundColor: t.swatch }} />}
                           <code style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] md:text-[12px] text-[#999]">{t.value}</code>
@@ -194,17 +194,17 @@ export default function Home() {
 
           
         {/* Stats — horizontal list, no boxes */}
-<Reveal delay={60} className="mb-14 md:mb-16">
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#e8e6e1] border border-[#e8e6e1] rounded-2xl overflow-hidden">
+<Reveal delay={60} className="mb-8 md:mb-10">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#2a2a35] border border-[#2a2a35] rounded-lg overflow-hidden">
     {[
       { value: "W3C", label: "Token spec" },
       { value: "3", label: "Export formats" },
       { value: "5", label: "Token types" },
       { value: "O(n)", label: "Diff algorithm" },
     ].map((stat) => (
-      <div key={stat.label} className="bg-white px-6 py-7 text-center">
-        <div style={{ fontFamily: "'DM Serif Display', serif" }} className="text-[32px] md:text-[38px] text-[#0a0a0b] leading-none mb-2">{stat.value}</div>
-        <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-[10px] text-[#aaa] uppercase tracking-wider leading-snug">{stat.label}</div>
+      <div key={stat.label} className="bg-[#09090f] px-6 py-7 text-center">
+        <div style={{ fontFamily: "'DM Serif Display', serif" }} className="text-[32px] md:text-[38px] text-white leading-none mb-2">{stat.value}</div>
+        <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-[10px] text-white/40 uppercase tracking-wider leading-snug">{stat.label}</div>
       </div>
     ))}
   </div>
@@ -218,7 +218,7 @@ export default function Home() {
               { tag: "Developer XP", title: "Multi-format export", desc: "One token set, three outputs — CSS custom properties, Tailwind config, or a typed JS module. Copy and ship." },
             ].map((item, i) => (
               <Reveal key={item.title} delay={i * 80}>
-                <div className="border border-[#e5e5e5] rounded-2xl p-5 md:p-6 transition-all duration-200 hover:border-indigo-300 hover:bg-indigo-50/40 group h-full">
+                <div className="border border-[#e5e5e5] rounded-lg p-5 md:p-6 transition-all duration-200 hover:border-indigo-300 hover:bg-indigo-50/40 group h-full">
                   <span style={{ fontFamily: "'DM Mono', monospace" }} className="text-[10px] uppercase tracking-widest text-indigo-400 group-hover:text-indigo-500 transition-colors">{item.tag}</span>
                   <h3 className="text-[15px] font-semibold text-[#111] mt-2 mb-2">{item.title}</h3>
                   <p className="text-[13px] text-[#777] leading-relaxed">{item.desc}</p>
