@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-// ── Google Fonts ───────────────────────────────────────────────────────────
 const fontLink = document.createElement("link");
 fontLink.rel = "stylesheet";
-fontLink.href = "https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap";
+fontLink.href = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap";
 document.head.appendChild(fontLink);
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -145,18 +144,15 @@ const SAMPLE_TARGET = `{
   }
 }`;
 
-// ── Animated counter ───────────────────────────────────────────────────────
 function AnimatedNumber({ value }: { value: number }) {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     let start = 0;
-    const end = value;
-    if (start === end) return;
-    const duration = 600;
-    const step = end / (duration / 16);
+    const duration = 500;
+    const step = value / (duration / 16);
     const timer = setInterval(() => {
       start += step;
-      if (start >= end) { setDisplay(end); clearInterval(timer); }
+      if (start >= value) { setDisplay(value); clearInterval(timer); }
       else setDisplay(Math.floor(start));
     }, 16);
     return () => clearInterval(timer);
@@ -164,16 +160,15 @@ function AnimatedNumber({ value }: { value: number }) {
   return <>{display}</>;
 }
 
-// ── Fade-in wrapper ────────────────────────────────────────────────────────
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     el.style.opacity = "0";
-    el.style.transform = "translateY(8px)";
+    el.style.transform = "translateY(6px)";
     const t = setTimeout(() => {
-      el.style.transition = `opacity 0.4s ease, transform 0.4s ease`;
+      el.style.transition = "opacity 0.35s ease, transform 0.35s ease";
       el.style.opacity = "1";
       el.style.transform = "translateY(0)";
     }, delay);
@@ -182,38 +177,34 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   return <div ref={ref}>{children}</div>;
 }
 
-// ── Color swatch ───────────────────────────────────────────────────────────
 function ColorSwatch({ value }: { value: string }) {
-  const isColor = /^#|rgb|hsl/.test(value);
-  if (!isColor) return null;
+  if (!/^#|rgb|hsl/.test(value)) return null;
   return (
     <span
-      className="inline-block w-3.5 h-3.5 rounded-sm border border-white/10 mr-1.5 align-middle flex-shrink-0"
+      className="inline-block w-3 h-3 rounded-sm border border-black/10 mr-1.5 align-middle flex-shrink-0"
       style={{ backgroundColor: value }}
       aria-hidden="true"
     />
   );
 }
 
-// ── Type badge ─────────────────────────────────────────────────────────────
 const TYPE_STYLES: Record<Token["type"], string> = {
-  color: "bg-pink-500/10 text-pink-400 border-pink-500/20",
-  spacing: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-  typography: "bg-violet-500/10 text-violet-400 border-violet-500/20",
-  radius: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  shadow: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-  other: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
+  color:      "text-pink-600 bg-pink-50",
+  spacing:    "text-blue-600 bg-blue-50",
+  typography: "text-violet-600 bg-violet-50",
+  radius:     "text-amber-600 bg-amber-50",
+  shadow:     "text-slate-500 bg-slate-100",
+  other:      "text-zinc-500 bg-zinc-100",
 };
 
 function TypeBadge({ type }: { type: Token["type"] }) {
   return (
-    <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium tracking-wide uppercase ${TYPE_STYLES[type]}`}>
+    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium uppercase tracking-wider ${TYPE_STYLES[type]}`}>
       {type}
     </span>
   );
 }
 
-// ── Main ───────────────────────────────────────────────────────────────────
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("import");
   const [sourceText, setSourceText] = useState(SAMPLE_SOURCE);
@@ -252,190 +243,187 @@ export default function App() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  const diffAdded = diffResults.filter((d) => d.status === "added").length;
+  const diffAdded   = diffResults.filter((d) => d.status === "added").length;
   const diffChanged = diffResults.filter((d) => d.status === "changed").length;
   const diffRemoved = diffResults.filter((d) => d.status === "removed").length;
 
   return (
-    <div style={{ fontFamily: "'Syne', sans-serif" }} className="min-h-screen bg-[#0a0a0b] text-slate-100">
-
-      {/* Subtle grid background */}
-      <div className="fixed inset-0 pointer-events-none" style={{
-        backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
-        backgroundSize: "48px 48px"
-      }} />
-
-      {/* Glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at center, rgba(99,102,241,0.08) 0%, transparent 70%)" }} />
-
-      {/* Header */}
-      <header className="relative border-b border-white/[0.06] bg-[#0a0a0b]/80 backdrop-blur-xl sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs"
-              style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+    <div style={{ fontFamily: "'Geist', sans-serif" }} className="min-h-screen bg-[#fafafa] text-[#111]">
+      <header className="border-b border-[#e5e5e5] bg-white sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-8 h-12 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-6 h-6 rounded-md flex items-center justify-center text-white font-bold text-[10px]"
+              style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)" }}
+            >
               TB
             </div>
-            <span className="font-bold text-[15px] tracking-tight text-white">TokenBridge</span>
-            <span className="text-[10px] text-slate-600 border border-white/[0.06] rounded px-1.5 py-0.5 font-medium tracking-wider uppercase">
+            <span className="font-semibold text-[14px] text-[#111] tracking-tight">TokenBridge</span>
+            <span
+              style={{ fontFamily: "'Geist Mono', monospace" }}
+              className="text-[10px] text-[#999] bg-[#f5f5f5] border border-[#e5e5e5] rounded px-1.5 py-0.5"
+            >
               v0.1.0
             </span>
           </div>
-          <p style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] text-slate-600 hidden sm:block">
-            design tokens · sync · export
-          </p>
+          <a
+            href="https://github.com/manilka005/tokenbridge"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[12px] text-[#666] hover:text-[#111] transition-colors flex items-center gap-1.5"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            GitHub
+          </a>
         </div>
       </header>
 
-      <main className="relative max-w-5xl mx-auto px-6 py-10">
-
-        {/* Tab bar */}
-        <div className="flex items-center gap-1 mb-10">
+      <main className="max-w-4xl mx-auto px-8 py-8">
+        <div className="flex items-center gap-0 mb-8 border-b border-[#e5e5e5]">
           {(["import", "diff", "export"] as ActiveTab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`relative px-4 py-1.5 rounded-md text-[13px] font-medium transition-all capitalize ${
+              className={`px-4 py-2.5 text-[13px] font-medium capitalize transition-all border-b-2 -mb-px ${
                 activeTab === tab
-                  ? "text-white"
-                  : "text-slate-500 hover:text-slate-300"
+                  ? "border-[#111] text-[#111]"
+                  : "border-transparent text-[#888] hover:text-[#444]"
               }`}
             >
-              {activeTab === tab && (
-                <span className="absolute inset-0 rounded-md bg-white/[0.07] border border-white/[0.1]" />
+              {tab}
+              {tab === "diff" && diffResults.length > 0 && (
+                <span className="ml-1.5 text-[10px] bg-[#f0f0f0] text-[#666] rounded-full px-1.5 py-0.5 font-medium">
+                  {diffResults.length}
+                </span>
               )}
-              <span className="relative">
-                {tab}
-                {tab === "diff" && diffResults.length > 0 && (
-                  <span className="ml-1.5 text-[10px] bg-indigo-500/20 text-indigo-400 rounded-full px-1.5 py-0.5">
-                    {diffResults.length}
-                  </span>
-                )}
-              </span>
             </button>
           ))}
         </div>
 
-        {/* ── IMPORT ── */}
         {activeTab === "import" && (
           <FadeIn>
             <div className="mb-6">
-              <h1 className="text-2xl font-bold tracking-tight text-white mb-1">Compare token sets</h1>
-              <p className="text-sm text-slate-500">Paste W3C-format JSON from Figma and your codebase to see what&#39;s changed.</p>
+              <h1 className="text-[22px] font-semibold tracking-tight text-[#111] mb-1">Compare token sets</h1>
+              <p className="text-[13px] text-[#888]">Paste W3C-format JSON from Figma and your codebase to see what changed.</p>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {[
                 { label: "Source", sublabel: "Figma / design", value: sourceText, onChange: setSourceText },
                 { label: "Target", sublabel: "Codebase / current", value: targetText, onChange: setTargetText },
               ].map(({ label, sublabel, value, onChange }) => (
                 <div key={label}>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <label className="text-[13px] font-semibold text-slate-200">{label}</label>
-                    <span style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] text-slate-600">{sublabel}</span>
+                  <div className="flex items-baseline gap-2 mb-1.5">
+                    <label className="text-[13px] font-medium text-[#111]">{label}</label>
+                    <span style={{ fontFamily: "'Geist Mono', monospace" }} className="text-[11px] text-[#aaa]">{sublabel}</span>
                   </div>
                   <textarea
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px" }}
-                    className="w-full h-80 bg-[#111113] border border-white/[0.07] rounded-xl p-4 text-slate-400 resize-none focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all leading-relaxed"
+                    style={{ fontFamily: "'Geist Mono', monospace", fontSize: "11.5px" }}
+                    className="w-full h-72 bg-white border border-[#e5e5e5] rounded-lg p-3.5 text-[#444] resize-none focus:outline-none focus:border-[#999] transition-colors leading-relaxed"
                     spellCheck={false}
                     aria-label={label}
                   />
                 </div>
               ))}
             </div>
-
             {parseError && (
-              <div role="alert" className="mb-4 bg-red-500/5 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 text-[13px]">
+              <div role="alert" className="mb-4 bg-red-50 border border-red-200 text-red-600 rounded-lg px-4 py-3 text-[13px]">
                 {parseError}
               </div>
             )}
-
             <button
               onClick={parseAndLoad}
-              className="group relative overflow-hidden bg-indigo-600 hover:bg-indigo-500 text-white text-[13px] font-semibold px-5 py-2.5 rounded-lg transition-all active:scale-95"
+              className="bg-[#111] hover:bg-[#333] text-white text-[13px] font-medium px-4 py-2 rounded-lg transition-colors active:scale-95"
             >
-              <span className="relative flex items-center gap-2">
-                Parse &amp; Compare
-                <span className="group-hover:translate-x-0.5 transition-transform">→</span>
-              </span>
+              Parse &amp; Compare →
             </button>
           </FadeIn>
         )}
 
-        {/* ── DIFF ── */}
         {activeTab === "diff" && (
           <FadeIn>
             {diffResults.length === 0 ? (
-              <div className="text-center py-32 text-slate-600">
-                <p className="text-lg font-semibold mb-2 text-slate-500">No diff yet</p>
-                <p className="text-sm">Go to Import, paste your tokens, and click Parse &amp; Compare.</p>
+              <div className="text-center py-32 text-[#bbb]">
+                <p className="text-[15px] font-medium mb-1 text-[#888]">No diff yet</p>
+                <p className="text-[13px]">Go to Import, paste your tokens, and click Parse &amp; Compare.</p>
               </div>
             ) : (
               <>
                 <div className="mb-6">
-                  <h1 className="text-2xl font-bold tracking-tight text-white mb-1">Token diff</h1>
-                  <p className="text-sm text-slate-500">{diffResults.length} token{diffResults.length !== 1 ? "s" : ""} changed between source and target.</p>
+                  <h1 className="text-[22px] font-semibold tracking-tight text-[#111] mb-1">Token diff</h1>
+                  <p className="text-[13px] text-[#888]">
+                    {diffResults.length} token{diffResults.length !== 1 ? "s" : ""} changed between source and target.
+                  </p>
                 </div>
-
-                {/* Summary cards */}
-                <div className="grid grid-cols-3 gap-3 mb-8">
+                <div className="grid grid-cols-3 gap-3 mb-6">
                   {[
-                    { label: "Added", count: diffAdded, color: "text-emerald-400", border: "border-emerald-500/15", bg: "bg-emerald-500/5" },
-                    { label: "Changed", count: diffChanged, color: "text-amber-400", border: "border-amber-500/15", bg: "bg-amber-500/5" },
-                    { label: "Removed", count: diffRemoved, color: "text-red-400", border: "border-red-500/15", bg: "bg-red-500/5" },
-                  ].map(({ label, count, color, border, bg }, i) => (
-                    <FadeIn key={label} delay={i * 60}>
-                      <div className={`border rounded-xl p-5 text-center ${border} ${bg}`}>
-                        <div className={`text-4xl font-black tracking-tight ${color}`}>
+                    { label: "Added",   count: diffAdded,   color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
+                    { label: "Changed", count: diffChanged, color: "#d97706", bg: "#fffbeb", border: "#fde68a" },
+                    { label: "Removed", count: diffRemoved, color: "#dc2626", bg: "#fef2f2", border: "#fecaca" },
+                  ].map(({ label, count, color, bg, border }, i) => (
+                    <FadeIn key={label} delay={i * 50}>
+                      <div className="rounded-lg p-4 text-center border" style={{ background: bg, borderColor: border }}>
+                        <div className="text-3xl font-bold tracking-tight" style={{ color }}>
                           <AnimatedNumber value={count} />
                         </div>
-                        <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] text-slate-500 mt-1 uppercase tracking-wider">{label}</div>
+                        <div
+                          style={{ fontFamily: "'Geist Mono', monospace" }}
+                          className="text-[10px] text-[#888] mt-1 uppercase tracking-wider"
+                        >
+                          {label}
+                        </div>
                       </div>
                     </FadeIn>
                   ))}
                 </div>
-
-                {/* Diff list */}
-                <div className="space-y-2">
+                <div className="border border-[#e5e5e5] rounded-lg overflow-hidden">
                   {diffResults.map((d, i) => (
-                    <FadeIn key={i} delay={i * 30}>
-                      <div className={`group rounded-xl border px-5 py-4 flex items-center gap-5 transition-all hover:border-white/[0.12] ${
-                        d.status === "added" ? "bg-emerald-500/[0.04] border-emerald-500/10"
-                        : d.status === "removed" ? "bg-red-500/[0.04] border-red-500/10"
-                        : "bg-amber-500/[0.04] border-amber-500/10"
-                      }`}>
-                        {/* Status pill */}
-                        <span style={{ fontFamily: "'DM Mono', monospace" }} className={`text-[10px] font-medium uppercase tracking-widest w-14 flex-shrink-0 ${
-                          d.status === "added" ? "text-emerald-500"
-                          : d.status === "removed" ? "text-red-500"
-                          : "text-amber-500"
-                        }`}>
+                    <FadeIn key={i} delay={i * 25}>
+                      <div
+                        className={`flex items-center gap-4 px-4 py-3 text-[13px] border-b border-[#f0f0f0] last:border-0 hover:bg-[#fafafa] transition-colors ${
+                          d.status === "added"
+                            ? "bg-[#f0fdf4]"
+                            : d.status === "removed"
+                            ? "bg-[#fef2f2]"
+                            : "bg-white"
+                        }`}
+                      >
+                        <span
+                          style={{ fontFamily: "'Geist Mono', monospace" }}
+                          className={`text-[10px] font-medium uppercase tracking-wider w-14 flex-shrink-0 ${
+                            d.status === "added"
+                              ? "text-green-600"
+                              : d.status === "removed"
+                              ? "text-red-500"
+                              : "text-amber-600"
+                          }`}
+                        >
                           {d.status}
                         </span>
-
-                        {/* Token name */}
-                        <code style={{ fontFamily: "'DM Mono', monospace" }} className="text-[13px] text-slate-300 flex-1 min-w-0 truncate">
+                        <code
+                          style={{ fontFamily: "'Geist Mono', monospace" }}
+                          className="text-[12.5px] text-[#333] flex-1 min-w-0 truncate"
+                        >
                           {d.token.name}
                         </code>
-
-                        {/* Type badge */}
                         <TypeBadge type={d.token.type} />
-
-                        {/* Values */}
-                        <div style={{ fontFamily: "'DM Mono', monospace" }} className="flex items-center gap-2 text-[12px] flex-shrink-0">
+                        <div
+                          style={{ fontFamily: "'Geist Mono', monospace" }}
+                          className="flex items-center gap-2 text-[12px] flex-shrink-0"
+                        >
                           {d.status === "changed" && (
                             <>
-                              <span className="flex items-center text-red-400/70 line-through">
+                              <span className="flex items-center text-[#bbb] line-through">
                                 <ColorSwatch value={String(d.oldValue)} />
                                 {String(d.oldValue)}
                               </span>
-                              <span className="text-slate-700">→</span>
+                              <span className="text-[#ccc]">→</span>
                             </>
                           )}
-                          <span className="flex items-center text-slate-300">
+                          <span className="flex items-center text-[#444]">
                             <ColorSwatch value={String(d.token.value)} />
                             {String(d.token.value)}
                           </span>
@@ -444,13 +432,12 @@ export default function App() {
                     </FadeIn>
                   ))}
                 </div>
-
-                <div className="mt-8">
+                <div className="mt-6">
                   <button
                     onClick={() => setActiveTab("export")}
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white text-[13px] font-semibold px-5 py-2.5 rounded-lg transition-all active:scale-95 flex items-center gap-2"
+                    className="bg-[#111] hover:bg-[#333] text-white text-[13px] font-medium px-4 py-2 rounded-lg transition-colors active:scale-95"
                   >
-                    Export tokens <span>→</span>
+                    Export tokens →
                   </button>
                 </div>
               </>
@@ -458,54 +445,57 @@ export default function App() {
           </FadeIn>
         )}
 
-        {/* ── EXPORT ── */}
         {activeTab === "export" && (
           <FadeIn>
             <div className="mb-6">
-              <h1 className="text-2xl font-bold tracking-tight text-white mb-1">Export tokens</h1>
-              <p className="text-sm text-slate-500">Copy your tokens in the format your codebase uses.</p>
+              <h1 className="text-[22px] font-semibold tracking-tight text-[#111] mb-1">Export tokens</h1>
+              <p className="text-[13px] text-[#888]">Copy your tokens in the format your codebase uses.</p>
             </div>
-
-            <div className="flex gap-2 mb-5" role="group" aria-label="Export format">
-              {([
-                { key: "css", label: "CSS Variables" },
-                { key: "tailwind", label: "Tailwind Config" },
-                { key: "js", label: "JS Object" },
-              ] as { key: ExportFormat; label: string }[]).map(({ key, label }) => (
+            <div className="flex gap-2 mb-4">
+              {(
+                [
+                  { key: "css",      label: "CSS Variables" },
+                  { key: "tailwind", label: "Tailwind Config" },
+                  { key: "js",       label: "JS Object" },
+                ] as { key: ExportFormat; label: string }[]
+              ).map(({ key, label }) => (
                 <button
                   key={key}
                   onClick={() => setExportFormat(key)}
-                  className={`px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${
                     exportFormat === key
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white/[0.04] text-slate-400 hover:text-slate-200 border border-white/[0.06]"
+                      ? "bg-[#111] text-white"
+                      : "bg-white border border-[#e5e5e5] text-[#666] hover:text-[#111] hover:border-[#999]"
                   }`}
                 >
                   {label}
                 </button>
               ))}
             </div>
-
-            <div className="relative rounded-xl overflow-hidden border border-white/[0.07]">
-              {/* Code header bar */}
-              <div className="flex items-center justify-between px-4 py-2.5 bg-white/[0.03] border-b border-white/[0.06]">
-                <span style={{ fontFamily: "'DM Mono', monospace" }} className="text-[11px] text-slate-600 uppercase tracking-wider">
-                  {exportFormat === "css" ? "styles/tokens.css" : exportFormat === "tailwind" ? "tailwind.config.js" : "tokens/index.ts"}
+            <div className="rounded-lg border border-[#e5e5e5] overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-[#f5f5f5] border-b border-[#e5e5e5]">
+                <span style={{ fontFamily: "'Geist Mono', monospace" }} className="text-[11px] text-[#999]">
+                  {exportFormat === "css"
+                    ? "tokens.css"
+                    : exportFormat === "tailwind"
+                    ? "tailwind.config.js"
+                    : "tokens/index.ts"}
                 </span>
                 <button
                   onClick={copyToClipboard}
-                  className={`text-[11px] font-medium px-3 py-1 rounded-md transition-all ${
+                  className={`text-[11px] font-medium px-2.5 py-1 rounded transition-all ${
                     copied
-                      ? "bg-emerald-500/20 text-emerald-400"
-                      : "bg-white/[0.05] text-slate-400 hover:text-slate-200 hover:bg-white/[0.08]"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-white border border-[#e5e5e5] text-[#666] hover:text-[#111]"
                   }`}
-                  aria-label="Copy to clipboard"
                 >
                   {copied ? "✓ Copied" : "Copy"}
                 </button>
               </div>
-              <pre style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px" }}
-                className="bg-[#0d0d0f] p-6 text-slate-400 overflow-auto max-h-[480px] leading-relaxed">
+              <pre
+                style={{ fontFamily: "'Geist Mono', monospace", fontSize: "12px" }}
+                className="bg-white p-5 text-[#444] overflow-auto max-h-[440px] leading-relaxed"
+              >
                 {targetTokens.length || sourceTokens.length
                   ? exportCode()
                   : "// Parse tokens first in the Import tab"}
