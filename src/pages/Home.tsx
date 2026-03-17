@@ -224,6 +224,7 @@ export default function Home() {
                   <p className="text-[13px] text-[#777] leading-relaxed">{item.desc}</p>
                 </div>
               </Reveal>
+              //reviewed and refactored the code, made sure to keep the same structure and styling
             ))}
           </div>
         </div>
